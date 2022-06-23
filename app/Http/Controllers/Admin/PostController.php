@@ -69,7 +69,7 @@ class PostController extends Controller
 
             return redirect()->route('admin.posts.show',$newPost->id);
         }
-    }
+    
 
     /**
      * Display the specified resource.
