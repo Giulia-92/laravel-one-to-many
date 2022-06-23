@@ -1,6 +1,5 @@
 @extends('layouts.admin')
-@dump($post)
-@dump($categories)
+
 @section('content')
 <div class="container">
     <form action="{{route('admin.posts.store',$post->id)}}" method="POST">
