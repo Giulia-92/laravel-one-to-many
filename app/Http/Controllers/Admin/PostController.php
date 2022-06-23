@@ -10,6 +10,13 @@ use Illuminate\Support\Str;
 
 class PostController extends Controller
 {
+    protected $validationRule = [
+        "title" => "required|string|max:130",
+        "content" => "required",
+        "published" => "sometimes|accepted",
+        "category_id" => "nullable|exists:categories,id",
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -29,7 +36,7 @@ class PostController extends Controller
     public function create()
     {
         $categories = Category::all();
-        return view ('admin.posts.create',compact('$categories'));
+        return view ('admin.posts.create',compact('categories'));
 
     }
 
@@ -41,7 +48,7 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //$request
+        $request->validate($this->validationRule);
         $data = $request->all();
         //dd($data);
 
@@ -51,16 +58,17 @@ class PostController extends Controller
         $newPost->content = $data['content'];
         $newPost->published = isset($data['published']);
         $newPost->category_id = $data['category_id'];
-        $count = 1;
-        While(Post::where('slug',$slug)->first()){
-            $slug = Str::of($data['title'])->slug("-") . "-{$count}";
-        $count++;      
-     }
-            $newPost->slug = $slug;
+        //$count = 1;
+       // While(Post::where('slug',$slug)->first()){
+           // $slug = Str::of($data['title'])->slug("-") . "-{$count}";
+       // $count++;      
+    
+            //$newPost->slug = $slug;
+            $newPost->slug = $this->getSlug($newPost->title);
             $newPost->save();
 
             return redirect()->route('admin.posts.show',$newPost->id);
-        
+        }
     }
 
     /**
@@ -99,10 +107,11 @@ class PostController extends Controller
      */
     public function update(Request $request,Post $post )
     {
+       $request->validate($this->validationRule);
        $data = $request->all();
        if ($post->title != $data ['title']){
-        $post->title = $data['title'];
-        $slug = Str::of($data['title'])->slug("-");
+            $post->title = $data['title'];
+        $slug = Str::of($post->title)->slug("-");
         if ($slug != $post->slug){
             $post->$slug = $this->getSlug ($post->title);
         }
@@ -124,7 +133,7 @@ class PostController extends Controller
      */
     public function destroy($id)
     {
-    $post = Post::findOrFail($id);
+    //$post = Post::findOrFail($id);
        $post->delete();
        return redirect()->route('admin.posts.index')->with("message","post with id:{$post->id} successfully deleted !");
 
@@ -142,7 +151,7 @@ class PostController extends Controller
         $count = 1; 
 
         while(Post::where('slug',$slug)->first()){
-            $slug = Str::of($data['title'])->slug("-") . "-{$count}";
+            $slug = Str::of($title)->slug("-") . "-{$count}";
             $count++;      
         }
 
