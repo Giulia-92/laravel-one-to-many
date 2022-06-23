@@ -1,4 +1,5 @@
 @extends('layouts.admin')
+@section('content')
 <div class="container">
   <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog">
@@ -26,25 +27,32 @@
 		 {{session()->get('message')}}
 </div>
 @endif
-@section('content')
+
 <div class="container">
   <table class="table">
   <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col"><Title></Title></th>
+      <th scope="col">Title</Title></th>
       <th scope="col">Creation date</th>
       <th scope="col">Modifica</th>
+      <th scope="col">Delete</th>
     </tr>
   </thead>
   <tbody>
    @foreach ($posts as $post)
    <tr>
-      <th scope="row">2</th>
       <td><a href="{{route('admin.posts.show', $post->id)}}">{{$post->id}}</a></td>
-      <td>{{$post->title}}</td>
+      <td> <a href="{{route('admin.posts.show', $post->id)}}">{{$post->title}}</a></td>
       <td>{{$post->created_at}}</td>
-      <td><a href="{{route('admin.posts.edit', $post->id)}}" class="btn btn-primary" >clicca qui</a></td>
+      <td><a href="{{route('admin.posts.edit', $post->id)}}" class="btn btn-primary" >Modifica</a></td>
+      <td>
+        <form action="{{route('admin.posts.destroy', $post->id)}}" method="post">
+            @csrf
+            @method('DELETE')
+            <button type="submit" @@click="openModal($event, {{$post->id}})" class="btn btn-warning delete">Delete</button>
+        </form>
+      </td>
     </tr>
    @endforeach
     
