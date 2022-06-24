@@ -50,7 +50,7 @@
         <form action="{{route('admin.posts.destroy', $post->id)}}" method="post">
             @csrf
             @method('DELETE')
-            <button type="submit" @@click="openModal($event, {{$post->id}})" class="btn btn-warning delete">Delete</button>
+            <button type="submit" @click="openModal($event, {{$post->id}})" class="btn btn-warning delete">Delete</button>
         </form>
       </td>
     </tr>
