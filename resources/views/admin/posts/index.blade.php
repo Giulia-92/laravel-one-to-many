@@ -58,5 +58,6 @@
     
     </tbody>
   </table>
+  {{$posts->liks()}}
 </div>
 @endsection
